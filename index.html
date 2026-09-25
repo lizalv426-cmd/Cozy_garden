@@ -65,9 +65,9 @@
 /* Позиционирование котика на кресле */
         #game-cat {
             position: absolute;
-            bottom: 390px;   /* Высота от пола */
+            bottom: 340px;   /* Высота от пола */
             left: 50%;       /* Двигаем к центру */
-            transform: translateX(-45px); /* Сдвигаем левее на кресло */
+            transform: translateX(-20px); /* Сдвигаем левее на кресло */
             width: 80px;     /* Размер котика */
             height: auto;
             pointer-events: none; 
@@ -109,6 +109,12 @@
         }
         .tool-btn:active {
             transform: scale(0.92);
+        }
+         /* Стиль для заблокированных во время роста кнопок */
+        .tool-btn.disabled {
+            filter: grayscale(100%) opacity(40%) !important;
+            cursor: not-allowed;
+            pointer-events: none; /* Запрещает клики мышкой и тапы */
         }
 
         /* ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ */
@@ -211,7 +217,7 @@
     <div id="game-container">
         <!-- Фоновый плеер для аудио -->
         <audio id="bg-music" src="music.mp3" loop></audio>
-<img id="game-cat" src=" cat_sleep.png" alt="Спящий котик">
+<img id="game-cat" src="cat_sleep.png" alt="Спящий котик">
         <!-- Графические элементы игры -->
         <img id="game-table" src="table.png" alt="Игровой стол">
         <img id="game-pot" src="pot_empty.png" alt="Горшочек" onclick="clickPot()">
@@ -248,41 +254,46 @@
         </div>
     </div>
 
-    <script>
-        let currentStage = 0; 
+        <script>
+        // 1. ГЛАВНЫЕ ИГРОВЫЕ ПЕРЕМЕННЫЕ
+        let currentStage = 0; // 0 - пустой, 1 - земля, 2 - росток, 3 - цветок
         let coins = 0;
         let selectedTool = null;
         let musicStarted = false;
         let isMuted = false;
+        
+        // Переменные для таймера времени
+        let growthTimer = null;
+        let isGrowing = false;
+        const GROWTH_TIME = 15; // Время роста цветка в секундах для теста
 
+        // 2. СВЯЗЬ С КАРТИНКАМИ НА ЭКРАНЕ
         const potElement = document.getElementById('game-pot');
         const coinsElement = document.getElementById('coins');
         const hintElement = document.getElementById('game-hint');
         const musicElement = document.getElementById('bg-music');
         const btnMusic = document.getElementById('btn-music');
 
-        // Автоматически подгружаем сохранения
+        // Автоматически подгружаем сохранения при старте
         loadGame();
 
-        // Проверяем и запускаем трек при первом клике игрока
+        // 3. ФУНКЦИИ МУЗЫКИ
         function startMusic() {
-            if (!musicStarted && !isMuted) {
-                musicElement.volume = 0.3; // Умеренная громкость 30%
+            if (!musicStarted && !isMuted && musicElement) {
+                musicElement.volume = 0.3; // Уютная негромкая музыка на 30%
                 musicElement.play().catch(function(e) {
-                    console.log("Ожидание взаимодействия для запуска звука");
+                    console.log("Ожидание клика для запуска звука");
                 });
                 musicStarted = true;
             }
         }
 
-        // Кнопка звука
         function toggleMusic() {
             if (!musicStarted) {
                 musicStarted = true;
                 musicElement.volume = 0.3;
                 musicElement.play();
             }
-
             if (isMuted) {
                 musicElement.muted = false;
                 isMuted = false;
@@ -294,10 +305,12 @@
             }
         }
 
+        // 4. ФУНКЦИЯ ВЫБОРА ИНСТРУМЕНТА Справа
         function selectTool(tool) {
-            startMusic(); 
+            if (isGrowing) return; // Защита: во время роста инструменты выбирать нельзя
             
-            // Сбрасываем визуальные стили активности со всех кнопок
+            try { startMusic(); } catch(e) { console.log(e); }
+            
             document.querySelectorAll('.tool-btn').forEach(function(btn) {
                 btn.style.filter = 'none';
                 btn.style.transform = 'none';
@@ -308,10 +321,10 @@
                 updateHint();
             } else {
                 selectedTool = tool;
-                // Подсвечиваем выбранную кнопочку
                 const activeBtn = document.getElementById('btn-' + tool);
                 if (activeBtn) {
-                    activeBtn.style.filter = 'drop-shadow(0 0 8px rgba(230, 95, 43, 0.8)) scale(1.05)';
+                    activeBtn.style.filter = 'drop-shadow(0 0 8px rgba(230, 95, 43, 0.8))';
+                    activeBtn.style.transform = 'scale(1.05)';
                 }
                 
                 if (tool === 'dirt') hintElement.innerText = "Кликните на горшочек, чтобы насыпать землю";
@@ -320,9 +333,13 @@
             }
         }
 
-               function clickPot() {
+        // 5. ФУНКЦИЯ КЛИКА ПО ГОРШОЧКУ
+        function clickPot() {
+            if (isGrowing) return; // Защита: блокируем клики во время роста
+            
             try { startMusic(); } catch(e) { console.log(e); }
             
+            // Шаг 1: Насыпаем землю
             if (currentStage === 0 && selectedTool === 'dirt') {
                 currentStage = 1;
                 potElement.src = 'pot_dirt.png';
@@ -330,6 +347,7 @@
                 updateHint();
                 saveGame(); 
             } 
+            // Шаг 2: Сажаем семена -> Росток
             else if (currentStage === 1 && selectedTool === 'seed') {
                 currentStage = 2;
                 potElement.src = 'pot_sprout.png'; 
@@ -337,13 +355,12 @@
                 updateHint();
                 saveGame();
             } 
+            // Шаг 3: Полив и ЗАПУСК ТАЙМЕРА роста
             else if (currentStage === 2 && selectedTool === 'water') {
-                currentStage = 3;
-                potElement.src = 'pot_flower.png';
                 resetTool();
-                updateHint();
-                saveGame();
+                startGrowthProcess();
             } 
+            // Шаг 4: Сбор готового цветка
             else if (currentStage === 3) {
                 coins += 150; 
                 coinsElement.innerText = coins;
@@ -359,8 +376,45 @@
                     hintElement.innerText = "Этот инструмент сейчас не подходит сюда.";
                 }
             }
-        } // Вот эта скобка закрывает функцию правильно, и код ниже больше не съезжает!
+        }
 
+        // 6. ФУНКЦИЯ НАСТОЯЩЕГО ТАЙМЕРА РОСТА
+        function startGrowthProcess() {
+            isGrowing = true;
+            let timeLeft = GROWTH_TIME;
+            
+            // Визуально блокируем кнопки (делаем их черно-белыми)
+            document.querySelectorAll('.tool-btn').forEach(function(btn) {
+                btn.classList.add('disabled');
+            });
+            
+            hintElement.innerText = "Водичка впиталась! Цветок растет... (" + timeLeft + " сек)";
+            
+            growthTimer = setInterval(function() {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    hintElement.innerText = "Водичка впиталась! Цветок растет... (" + timeLeft + " сек)";
+                } else {
+                    // Время вышло! Цветок вырос
+                    clearInterval(growthTimer);
+                    isGrowing = false;
+                    currentStage = 3;
+                    potElement.src = 'pot_flower.png';
+                    
+                    // Возвращаем кнопкам былую яркость
+                    document.querySelectorAll('.tool-btn').forEach(function(btn) {
+                        btn.classList.remove('disabled');
+                    });
+                    
+                    updateHint();
+                    saveGame();
+                }
+            }, 1000);
+            
+            saveGame();
+        }
+
+        // 7. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
         function resetTool() {
             selectedTool = null;
             document.querySelectorAll('.tool-btn').forEach(function(btn) {
@@ -370,6 +424,7 @@
         }
 
         function updateHint() {
+            if (isGrowing) return;
             if (currentStage === 0) hintElement.innerText = "Выберите инструмент «Земля» справа";
             if (currentStage === 1) hintElement.innerText = "Отлично! Теперь выберите «Семена»";
             if (currentStage === 2) hintElement.innerText = "Росток появился! Выберите «Вода» для полива";
@@ -380,24 +435,30 @@
             alert("📖 Здесь будет открываться ваш красивый блокнот-гербарий!");
         }
 
+        // 8. СИСТЕМА ЛОКАЛЬНОГО СОХРАНЕНИЯ ПРОГРЕССА
         function saveGame() {
             localStorage.setItem('cozy_garden_coins', coins);
             localStorage.setItem('cozy_garden_stage', currentStage);
+            localStorage.setItem('cozy_garden_growing', isGrowing);
         }
 
         function loadGame() {
             const savedCoins = localStorage.getItem('cozy_garden_coins');
             const savedStage = localStorage.getItem('cozy_garden_stage');
+            const savedGrowing = localStorage.getItem('cozy_garden_growing');
             
             if (savedCoins !== null) {
                 coins = parseInt(savedCoins);
                 coinsElement.innerText = coins;
             }
-            if (savedStage !== null) {
+            
+            if (savedGrowing === 'true' || savedStage === '2') {
+                currentStage = 2;
+                potElement.src = 'pot_sprout.png';
+            } else if (savedStage !== null) {
                 currentStage = parseInt(savedStage);
                 if (currentStage === 0) potElement.src = 'pot_empty.png';
                 if (currentStage === 1) potElement.src = 'pot_dirt.png';
-                if (currentStage === 2) potElement.src = 'pot_sprout.png';
                 if (currentStage === 3) potElement.src = 'pot_flower.png';
             }
             updateHint();
