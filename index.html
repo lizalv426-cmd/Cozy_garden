@@ -62,6 +62,17 @@
             pointer-events: none;
             z-index: 5;
         }
+/* Позиционирование котика на кресле */
+        #game-cat {
+            position: absolute;
+            bottom: 390px;   /* Высота от пола */
+            left: 50%;       /* Двигаем к центру */
+            transform: translateX(-45px); /* Сдвигаем левее на кресло */
+            width: 80px;     /* Размер котика */
+            height: auto;
+            pointer-events: none; 
+            z-index: 4;      
+        }
 
         /* Горшочек на столе */
         #game-pot {
@@ -200,7 +211,7 @@
     <div id="game-container">
         <!-- Фоновый плеер для аудио -->
         <audio id="bg-music" src="music.mp3" loop></audio>
-
+<img id="game-cat" src=" cat_sleep.png" alt="Спящий котик">
         <!-- Графические элементы игры -->
         <img id="game-table" src="table.png" alt="Игровой стол">
         <img id="game-pot" src="pot_empty.png" alt="Горшочек" onclick="clickPot()">
