@@ -210,6 +210,61 @@
             font-size: 14px;
             line-height: 1.2;
         }
+            /* Задний полупрозрачный фон, который затемняет комнату */
+        #catalog-modal {
+            display: none; /* ПО УМОЛЧАНИЮ ОКНО СКРЫТО! */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Мягкое темное размытие комнаты */
+            z-index: 100; /* Окно должно быть выше абсолютно всех кнопок в игре */
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Контейнер внутри окна */
+        #catalog-content {
+            position: relative;
+            width: 90%; /* Блокнот займет 90% ширины игрового экрана */
+            max-width: 400px;
+            height: auto;
+        }
+
+        /* Сам нарисованный блокнот */
+        #catalog-notebook {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Кнопка закрытия ❌ */
+        #catalog-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 110;
+            transition: transform 0.1s ease;
+        }
+        #catalog-close:active {
+            transform: scale(0.9);
+        }
+
+        /* Временный заголовок внутри блокнота */
+        #catalog-title {
+            position: absolute;
+            top: 40px;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            color: #4a3b32;
+            font-size: 20px;
+            pointer-events: none;
+        }
+
     </style>
 </head>
 <body>
@@ -245,7 +300,7 @@
 
         <!-- Нижняя кнопка каталога -->
         <div id="catalog-wrapper">
-            <img id="btn-catalog" src="btn_catalog.png" alt="Каталог растений" onclick="openCatalog()">
+                    <img id="btn-catalog" src="btn_catalog.png" alt="Каталог растений" onclick="openCatalog()">
         </div>
 
         <!-- Нижняя кнопка музыки справа -->
@@ -253,7 +308,14 @@
             <img id="btn-music" src="btn_music.png" alt="Музыка" onclick="toggleMusic()">
         </div>
     </div>
-
+   <!-- ВСПЛЫВАЮЩЕЕ ОКНО КАТАЛОГА -->
+        <div id="catalog-modal">
+            <div id="catalog-content">
+                <img id="catalog-notebook" src="catalog_bg.png" alt="Гербарий">
+                <div id="catalog-close" onclick="closeCatalog()">❌</div>
+                <div id="catalog-title">Ваш Гербарий</div>
+            </div>
+        </div>
         <script>
         // 1. ГЛАВНЫЕ ИГРОВЫЕ ПЕРЕМЕННЫЕ
         let currentStage = 0; // 0 - пустой, 1 - земля, 2 - росток, 3 - цветок
@@ -431,8 +493,16 @@
             if (currentStage === 3) hintElement.innerText = "Красота! Кликните на цветок, чтобы собрать пыльцу";
         }
 
+         // Функция, которая открывает блокнот-гербарий
         function openCatalog() {
-            alert("📖 Здесь будет открываться ваш красивый блокнот-гербарий!");
+            // Находим наше скрытое окно по его ID и меняем 'none' на 'flex' (сделать видимым)
+            document.getElementById('catalog-modal').style.display = 'flex';
+        }
+
+        // Функция, которая закрывает блокнот-гербарий
+        function closeCatalog() {
+            // Снова прячем окно, возвращая ему значение 'none'
+            document.getElementById('catalog-modal').style.display = 'none';
         }
 
         // 8. СИСТЕМА ЛОКАЛЬНОГО СОХРАНЕНИЯ ПРОГРЕССА
