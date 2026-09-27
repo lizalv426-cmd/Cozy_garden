@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Мой Уютный Гербарий</title>
-    <style>
+<style>
         * {
             box-sizing: border-box;
             margin: 0;
@@ -62,13 +62,14 @@
             pointer-events: none;
             z-index: 5;
         }
-/* Позиционирование котика на кресле */
+
+        /* Позиционирование котика на кресле */
         #game-cat {
             position: absolute;
-            bottom: 340px;   /* Высота от пола */
-            left: 50%;       /* Двигаем к центру */
-            transform: translateX(-20px); /* Сдвигаем левее на кресло */
-            width: 80px;     /* Размер котика */
+            bottom: 270px;   
+            left: 50%;       
+            transform: translateX(-20px); 
+            width: 80px;     
             height: auto;
             pointer-events: none; 
             z-index: 4;      
@@ -94,7 +95,7 @@
         #right-panel {
             position: absolute;
             right: 15px; 
-            top: 15px; 
+            top: 130px; /* Немного опустили панель, чтобы освободить место под веночек уровня */
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -110,14 +111,13 @@
         .tool-btn:active {
             transform: scale(0.92);
         }
-         /* Стиль для заблокированных во время роста кнопок */
         .tool-btn.disabled {
             filter: grayscale(100%) opacity(40%) !important;
             cursor: not-allowed;
-            pointer-events: none; /* Запрещает клики мышкой и тапы */
+            pointer-events: none;
         }
 
-        /* ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ */
+        /* ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ СЛЕВА */
         #ui-top-left {
             position: absolute;
             top: 15px;
@@ -135,12 +135,76 @@
         }
         #coins-text {
             position: absolute;
-            right: 30px; 
-            top: 56%; 
+            right: 105px;     /* Идеальный отступ для новой плашки */
+            top: 54%;         
             transform: translateY(-50%);
             font-size: 18px;
             font-weight: bold;
-            color: #312117;
+            color: #543525;   /* Красивый шоколадный цвет текста */
+        }
+
+        /* ВЕРХНЯЯ ПАНЕЛЬ УРОВНЯ И ОПЫТА СПРАВА */
+        #ui-top-right {
+            position: absolute;
+            top: 15px;
+            right: 15px;      
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            gap: 2px;         
+            z-index: 30;
+        }
+
+        #level-wrapper {
+            position: relative;
+            width: 140px;     
+            height: auto;
+        }
+        #level-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        #level-text {
+            position: absolute;
+            left: 50%;
+            top: 39%;         
+            transform: translate(-50%, -50%); 
+            font-size: 22px;  
+            font-weight: bold;
+            color: #543525;   
+            text-shadow: 1px 1px 0px #ffffff;
+        }
+
+        #exp-wrapper {
+            position: relative;
+            width: 110px;      
+            height: 25px;      
+            margin-top: -38px;  /* Ещё сильнее потянули шкалу вверх! */
+        }
+
+        /* Сама деревянная рамочка-окошко */
+        #exp-bg {
+            position: absolute;
+            top: 0;             /* Намертво крепим к верхнему краю контейнера */
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 7;        
+            display: block;
+            pointer-events: none; 
+        }
+
+        #exp-bar {
+            position: absolute;
+            top: 3px;          
+            left: 4px;         
+            width: 50%;        /* 50% для теста заполнения шкалы */
+            height: calc(100% - 6px); 
+            border-radius: 20px; 
+            z-index: 5;        
+            object-fit: cover;
+            transition: width 0.3s ease-in-out; 
         }
 
         /* КНОПКА КАТАЛОГА */
@@ -162,7 +226,7 @@
             transform: scale(0.95);
         }
 
-        /* КНОПКА МУЗЫКИ В ПРАВОМ НИЖНЕМ УГЛУ */
+        /* КНОПКА МУЗЫКИ */
         #music-wrapper {
             position: absolute;
             bottom: 15px;    
@@ -210,48 +274,43 @@
             font-size: 14px;
             line-height: 1.2;
         }
-            /* Задний полупрозрачный фон, который затемняет комнату */
+
+        /* СТИЛИ ДЛЯ ВСПЛЫВАЮЩЕГО ОКНА МАГАЗИНА */
         #catalog-modal {
-            display: none; /* ПО УМОЛЧАНИЮ ОКНО СКРЫТО! */
+            display: none; 
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Мягкое темное размытие комнаты */
-            z-index: 100; /* Окно должно быть выше абсолютно всех кнопок в игре */
+            background-color: rgba(0, 0, 0, 0.6); 
+            z-index: 100; 
             justify-content: center;
             align-items: center;
         }
-
-        /* Контейнер внутри окна */
         #catalog-content {
             position: relative;
-            width: 90%; /* Блокнот займет 90% ширины игрового экрана */
+            width: 90%; 
             max-width: 400px;
             height: auto;
         }
-
-        /* Сам нарисованный блокнот */
         #catalog-notebook {
             width: 100%;
             height: auto;
             display: block;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
         }
-
-                /* Стильный белый крестик с прозрачностью 20% */
         #catalog-close {
             position: absolute;
-            top: -25px;      /* Подняли на один уровень с заголовком «Магазин» */
-            right: 10px;     /* Подвинули к правому краю */
+            top: -35px;      
+            right: 10px;     
             width: 24px;
             height: 24px;
             cursor: pointer;
-            opacity: 0.8;    /* Прозрачность 20% */
+            opacity: 0.2;    
             z-index: 110;
             transition: transform 0.1s ease, opacity 0.2s ease;
         }
-        /* Делаем крестик из двух белых линий */
         #catalog-close::before, #catalog-close::after {
             content: '';
             position: absolute;
@@ -259,32 +318,28 @@
             left: 0;
             width: 24px;
             height: 3px;
-            background-color: #ffffff; /* Чисто белый цвет */
+            background-color: #ffffff; 
             border-radius: 2px;
         }
         #catalog-close::before { transform: rotate(45deg); }
         #catalog-close::after { transform: rotate(-45deg); }
-
         #catalog-close:active {
             transform: scale(0.85);
             opacity: 0.6;
         }
-
-        /* Надпись Магазин вверху по центру белым цветом */
         #catalog-title {
             position: absolute;
-            top: -10px;       /* Подняли НАД верхним краем блокнота */
+            top: -40px;       
             bottom: auto;     
             width: 100%;
             text-align: center;
             font-weight: bold;
-            color: #ffffff;   /* Белый цвет */
-            font-size: 24px;   /* Сделали чуть-чуть крупнее для солидности */
+            color: #ffffff;   
+            font-size: 24px;   
             letter-spacing: 1px;
             pointer-events: none;
         }
-
-    </style>
+    </style>   
 </head>
 <body>
 
@@ -316,6 +371,55 @@
                 <div id="coins-text"><span id="coins">0</span></div>
             </div>
         </div>
+
+            <div id="game-container">
+        <audio id="bg-music" src="music.mp3" loop></audio>
+
+        <!-- 1. Слои комнаты и персонажи -->
+        <img id="game-cat" src="cat_sleep.png" alt="Спящий котик">
+        <img id="game-table" src="table.png" alt="Игровой стол">
+        <img id="game-pot" src="pot_empty.png" alt="Горшочек" onclick="clickPot()">
+
+        <!-- 2. Панель подсказок с котиком -->
+        <div id="hint-wrapper">
+            <img id="hint-bg" src="panel_hint.png" alt="Панель подсказок">
+            <div id="game-hint">Выберите инструмент «Земля» справа</div>
+        </div>
+
+        <!-- 3. ЛЕВАЯ ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ -->
+        <div id="ui-top-left">
+            <div id="coin-panel-wrapper">
+                <img id="coin-img" src="panel_coins.png" alt="Монеты">
+                <div id="coins-text"><span id="coins">0</span></div>
+            </div>
+        </div>
+
+        <!-- 4. ПРАВАЯ ВЕРХНЯЯ ПАНЕЛЬ УРОВНЯ И ОПЫТА (Всё четко закрыто!) -->
+        <div id="ui-top-right">
+            <div id="level-wrapper">
+                <img id="level-img" src="panel_level.png" alt="Уровень">
+                <div id="level-text"><span id="player-level-num">0</span></div>
+            </div>
+            <div id="exp-wrapper">
+                <img id="exp-bg" src="exp_bg.png" alt="Шкала опыта">
+                <img id="exp-bar" src="exp_bar.png" alt="Прогресс опыта">
+            </div>
+        </div>
+
+        <!-- 5. ПРАВАЯ ПАНЕЛЬ ИНСТРУМЕНТОВ -->
+        <div id="right-panel">
+            <img id="btn-dirt" class="tool-btn" src="btn_dirt.png" alt="Земля" onclick="selectTool('dirt')">
+            <img id="btn-water" class="tool-btn" src="btn_water.png" alt="Вода" onclick="selectTool('water')">
+            <img id="btn-seed" class="tool-btn" src="btn_seed.png" alt="Семена" onclick="selectTool('seed')">
+        </div>
+
+
+            <!-- Пустая деревянная рамка опыта -->
+            <div id="exp-wrapper">
+                <img id="exp-bg" src="exp_bg.png" alt="Шкала опыта">
+                <!-- ЖЁЛТАЯ ЗАЛИВКА ОПЫТА -->
+                <img id="exp-bar" src="exp_bar.png" alt="Прогресс опыта">
+            </div>
 
         <!-- Нижняя кнопка каталога -->
         <div id="catalog-wrapper">
@@ -443,7 +547,7 @@
             } 
             // Шаг 4: Сбор готового цветка
             else if (currentStage === 3) {
-                coins += 150; 
+                coins += 3; 
                 coinsElement.innerText = coins;
                 currentStage = 0;
                 potElement.src = 'pot_empty.png';
