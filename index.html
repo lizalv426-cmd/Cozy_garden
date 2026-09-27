@@ -95,7 +95,7 @@
         #right-panel {
             position: absolute;
             right: 15px; 
-            top: 130px; /* Немного опустили панель, чтобы освободить место под веночек уровня */
+            top: 140px; /* Опустили инструменты чуть ниже, чтобы они не врезались в шкалу */
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -120,7 +120,7 @@
         /* ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ СЛЕВА */
         #ui-top-left {
             position: absolute;
-            top: 15px;
+            top: 31px;        /* Опустили ниже, чтобы выровнять строго в уровень с веночком */
             left: 15px; 
             z-index: 30;
         }
@@ -135,25 +135,24 @@
         }
         #coins-text {
             position: absolute;
-            right: 105px;     /* Идеальный отступ для новой плашки */
+            right: 105px;     
             top: 54%;         
             transform: translateY(-50%);
             font-size: 18px;
             font-weight: bold;
-            color: #543525;   /* Красивый шоколадный цвет текста */
+            color: #543525;   
         }
 
         /* ВЕРХНЯЯ ПАНЕЛЬ УРОВНЯ И ОПЫТА СПРАВА */
         #ui-top-right {
             position: absolute;
-            top: 15px;
+            top: 25px;        
             right: 15px;      
             display: flex;
             flex-direction: column;
             align-items: center; 
             gap: 2px;         
             z-index: 30;
-            /* Уютная объемная тень для всего блока (смещение вниз на 4px и мягкое размытие) */
             filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.4));
         }
 
@@ -170,7 +169,7 @@
         #level-text {
             position: absolute;
             left: 50%;
-            top: 39%;         
+            top: 42%;         /* Опустили цифру ниже, строго в яблочко веночка */
             transform: translate(-50%, -50%); 
             font-size: 22px;  
             font-weight: bold;
@@ -178,18 +177,15 @@
             text-shadow: 1px 1px 0px #ffffff;
         }
 
-        /* Контейнер для полоски опыта */
         #exp-wrapper {
             position: relative;
             width: 110px;      
             height: 25px;      
-            margin-top: -43px;  /* Финальный ювелирный сдвиг вверх */
+            margin-top: -47px;  /* Максимально плотно прижали шкалу к ленточке */
         }
-
-        /* Сама деревянная рамочка-окошко */
         #exp-bg {
             position: absolute;
-            top: 0;             /* Намертво крепим к верхнему краю контейнера */
+            top: 0;
             left: 0;
             width: 100%;
             height: 100%;
@@ -197,12 +193,11 @@
             display: block;
             pointer-events: none; 
         }
-
         #exp-bar {
             position: absolute;
             top: 3px;          
             left: 4px;         
-            width: 50%;        /* 50% для теста заполнения шкалы */
+            width: 50%;        
             height: calc(100% - 6px); 
             border-radius: 20px; 
             z-index: 5;        
