@@ -20,37 +20,35 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+                /* Перелив солнечного света */
         #game-container {
             position: relative;
             width: 100%;
-            max-width: 500px;
-            height: 100%;
-            margin: 0 auto;
+            max-width: 450px; /* Ограничиваем ширину игры, как на экране телефона */
+            height: 100vh;    /* Намертво растягиваем игру на всю высоту экрана */
+            margin: 0 auto;   /* Выравниваем всю игру строго по центру экрана компьютера */
             background-image: url('bg.png');
             background-size: cover;
             background-position: center;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        /* Перелив солнечного света */
-        #game-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 236, 179, 0.25) 0%, rgba(255, 213, 79, 0.05) 50%, transparent 100%);
-            pointer-events: none; 
-            z-index: 2;
-            animation: sunlightPulse 8s ease-in-out infinite;
+            overflow: hidden; /* Прячем всё, что пытается вылезти за границы экрана телефона */
         }
 
         @keyframes sunlightPulse {
-            0% { opacity: 0.3; }
-            50% { opacity: 0.8; } 
-            100% { opacity: 0.3; }
+            0% { 
+                opacity: 0.2; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.6; 
+                transform: scale(1.03) translate(3px, 3px); 
+            } 
+            100% { 
+                opacity: 0.2; 
+                transform: scale(1);
+            }
         }
+
 
         /* Стол */
         #game-table {
@@ -66,10 +64,10 @@
         /* Позиционирование котика на кресле */
         #game-cat {
             position: absolute;
-            bottom: 270px;   
+            bottom: 440px;   
             left: 50%;       
             transform: translateX(-20px); 
-            width: 80px;     
+            width: 100px;     
             height: auto;
             pointer-events: none; 
             z-index: 4;      
@@ -91,36 +89,64 @@
             transform: translateX(-50%) scale(0.95);
         }
 
-        /* ПРАВАЯ ПАНЕЛЬ ИНСТРУМЕНТОВ */
-        #right-panel {
+                /* НЕВИДИМЫЕ КРУГИ ДЛЯ 5 КНОПОК МЕНЮ */
+        .menu-circle-click {
             position: absolute;
-            right: 15px; 
-            top: 140px; /* Опустили инструменты чуть ниже, чтобы они не врезались в шкалу */
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 30;
+            bottom: 22px;      /* Высота кружков от низа */
+            width: 72px;       /* Диаметр зоны для тапа пальцем */
+            height: 72px;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 45;
+            /* background-color: rgba(255, 0, 0, 0.3); */ /* Раскомментируйте, чтобы увидеть зоны при тесте! */
+        }
+        
+        /* Рассаживаем 5 зон по кнопкам на панели */
+        #btn-toggle-tools { left: 4%; }
+        #btn-menu-inventory { left: 24%; }
+        #btn-menu-garden { left: 43%; }
+        #btn-menu-shop { left: 62%; }
+        #btn-menu-achievements { left: 81%; }
+
+                /* КОНТЕЙНЕР ДЛЯ НАШЕЙ ИЗЯЩНОЙ ВЕТОЧКИ */
+        #tools-drop-menu {
+            display: none;     /* Изначально прячем */
+            position: absolute;
+            bottom: 90px;      /* Поднимаем четко над деревянным бортиком меню */
+            left: 15px;        /* Подвинули ближе к кнопке инструментов */
+            width: 170px;      /* Аккуратный размер веточки */
+            height: 190px;     /* Четко задаем высоту контейнера для правильного отсчета bottom */
+            z-index: 42;
+            filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3)); 
         }
 
-        .tool-btn {
-            width: 90px; 
+        #tools-menu-img {
+            width: 100%;
             height: auto;
+            display: block;
+        }
+
+        /* КРУГЛЫЕ ЗОНЫ КЛИКА НА ВЕТОЧКЕ */
+        .tool-drop-circle {
+            position: absolute;
+            width: 50px;       /* Диаметр под круглые иконки */
+            height: 50px;
             cursor: pointer;
-            transition: transform 0.1s ease, filter 0.2s ease;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 255, 0.4); /* Включаем синий цвет для проверки! */
+            z-index: 46;
         }
-        .tool-btn:active {
-            transform: scale(0.92);
-        }
-        .tool-btn.disabled {
-            filter: grayscale(100%) opacity(40%) !important;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
+
+        /* Точные координаты синих кругов относительно низа веточки */
+        #click-tool-dirt { bottom: 10px; left: 12px; }    /* Лопата (нижний круг) */
+        #click-tool-seed { bottom: 65px; left: 32px; }    /* Семена (средний круг) */
+        #click-tool-water { bottom: 115px; left: 88px; }  /* Леечка (верхний круг) */
+
 
         /* ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ СЛЕВА */
         #ui-top-left {
             position: absolute;
-            top: 31px;        /* Опустили ниже, чтобы выровнять строго в уровень с веночком */
+            top: 60px;        /* Опустили ниже, чтобы выровнять строго в уровень с веночком */
             left: 15px; 
             z-index: 30;
         }
@@ -146,7 +172,7 @@
         /* ВЕРХНЯЯ ПАНЕЛЬ УРОВНЯ И ОПЫТА СПРАВА */
         #ui-top-right {
             position: absolute;
-            top: 25px;        
+            top: 39px;        
             right: 15px;      
             display: flex;
             flex-direction: column;
@@ -204,34 +230,63 @@
             object-fit: cover;
             transition: width 0.3s ease-in-out; 
         }
-
-        /* КНОПКА КАТАЛОГА */
-        #catalog-wrapper {
+        /* НОВАЯ НИЖНЯЯ ПАНЕЛЬ МЕНЮ */
+        #main-menu-wrapper {
             position: absolute;
-            bottom: 5px;
+            bottom: 0;        /* Намертво прижали к самому низу экрана */
             left: 50%;
             transform: translateX(-50%);
-            width: 240px; 
-            z-index: 30;
+            width: 100%;      /* Растягивается на всю ширину контейнера */
+            max-width: 500px;
+            height: auto;
+            z-index: 40;      /* Лежит выше стола и котика, прямо под пальцами */
+            filter: drop-shadow(0px -4px 8px rgba(0, 0, 0, 0.35)); /* Мягкая тень вверх, на комнату */
         }
-        #btn-catalog {
+
+        #main-menu-img {
             width: 100%;
             height: auto;
-            cursor: pointer;
-            transition: transform 0.1s ease;
+            display: block;
         }
+
+        /* НЕВИДИМАЯ КНОПКА КЛИКА ПОВЕРХ МАГАЗИНА */
+        #menu-click-shop {
+            position: absolute;
+            bottom: 10px;
+            right: 21%;       /* Выровняли невидимую зону ровно над кружком Магазина */
+            width: 70px;      /* Размеры зоны для тапа пальцем */
+            height: 70px;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 45;
+            /* background-color: rgba(255, 0, 0, 0.3); */ /* Раскомментируйте (уберите две косые черты в начале строки), если захотите увидеть зону кнопки на экране при тестах! */
+        }
+
         #btn-catalog:active {
             transform: scale(0.95);
         }
 
-        /* КНОПКА МУЗЫКИ */
+        /* КНОПКА МУЗЫКИ ПОД МОНЕТАМИ */
         #music-wrapper {
-            position: absolute;
-            bottom: 15px;    
-            right: 15px;     
-            width: 60px;     
+            position: relative;
+            margin-top: -20px;   /* Отступ вниз от деревянной панели монет */
+            margin-left: 2px;   /* Выровняли по левому краю, чтобы листики смотрелись аккуратно */
+            width: 100px;       /* Увеличили ширину, чтобы табличка стала крупной и читаемой! */
             height: auto;
-            z-index: 30;
+            z-index: 35;
+            filter: drop-shadow(0px 4px 5px rgba(0, 0, 0, 0.35)); /* Мягкая объемная тень */
+        }
+        #btn-music {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.1s ease, filter 0.2s ease;
+        }
+        #btn-music:active {
+            transform: scale(0.9);
+        }
+        #btn-music.muted {
+            filter: grayscale(100%) opacity(50%);
         }
         #btn-music {
             width: 100%;
@@ -337,17 +392,68 @@
             letter-spacing: 1px;
             pointer-events: none;
         }
+                /* НЕВИДИМЫЕ КРУГИ ДЛЯ 5 КНОПОК МЕНЮ */
+        .menu-circle-click {
+            position: absolute;
+            bottom: 22px;      /* Высота кружков от низа */
+            width: 72px;       /* Диаметр зоны для тапа пальцем */
+            height: 72px;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 45;
+            /* background-color: rgba(255, 0, 0, 0.3); */ /* Раскомментируйте, чтобы увидеть зоны при тесте! */
+        }
+        
+        /* Рассаживаем 5 зон по кнопкам на панели */
+        #btn-toggle-tools { left: 4%; }
+        #btn-menu-inventory { left: 24%; }
+        #btn-menu-garden { left: 43%; }
+        #btn-menu-shop { left: 62%; }
+        #btn-menu-achievements { left: 81%; }
+
+        /* КОНТЕЙНЕР ДЛЯ НАШЕЙ НОВОЙ ВЕТОЧКИ */
+        #tools-drop-menu {
+            display: none;    /* ПО УМОЛЧАНИЮ ВЕТОЧКА СПРЯТАНА! */
+            position: absolute;
+            bottom: 75px;     /* Поднимаем её ровно над нижней панелью */
+            left: 0px;        /* Прижимаем к левому краю меню */
+            width: 260px;     /* Ширина вашей вырезанной веточки (подгоним, если нужно) */
+            height: auto;
+            z-index: 42;
+        }
+
+        #tools-menu-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* НЕВИДИМЫЕ ЗОНЫ ДЛЯ КЛИКОВ НА САМОЙ ВЕТОЧКЕ */
+        .tool-drop-circle {
+            position: absolute;
+            width: 55px;      /* Диаметр круглых инструментов */
+            height: 55px;
+            cursor: pointer;
+            border-radius: 50%;
+            /* background-color: rgba(0, 0, 255, 0.3); */ /* Раскомментируйте для настройки кругов! */
+        }
+
+        /* Примерные координаты зон поверх веточки (скорректируем по вашей картинке!) */
+        #click-tool-dirt { top: 10px; left: 44%; }   /* Лопата с землей */
+        #click-tool-seed { bottom: 10px; left: 46%; } /* Семена */
+        #click-tool-water { top: 60px; right: 5%; }   /* Леечка */
     </style>   
 </head>
 <body>
 
-    <div id="game-container">
-        <!-- Фоновый плеер для аудио -->
+        <div id="game-container">
         <audio id="bg-music" src="music.mp3" loop></audio>
-<img id="game-cat" src="cat_sleep.png" alt="Спящий котик">
-        <!-- Графические элементы игры -->
+
+        <!-- Слои комнаты: котик, стол и горшочек -->
+        <img id="game-cat" src="cat_sleep.png" alt="Спящий котик">
         <img id="game-table" src="table.png" alt="Игровой стол">
         <img id="game-pot" src="pot_empty.png" alt="Горшочек" onclick="clickPot()">
+
 
         <!-- Панель подсказок -->
         <div id="hint-wrapper">
@@ -355,18 +461,39 @@
             <div id="game-hint">Выберите инструмент «Земля» справа</div>
         </div>
 
-        <!-- Кнопки инструментов справа -->
-        <div id="right-panel">
-            <img id="btn-dirt" class="tool-btn" src="btn_dirt.png" alt="Земля" onclick="selectTool('dirt')">
-            <img id="btn-water" class="tool-btn" src="btn_water.png" alt="Вода" onclick="selectTool('water')">
-            <img id="btn-seed" class="tool-btn" src="btn_seed.png" alt="Семена" onclick="selectTool('seed')">
+        <!-- ОБНОВЛЕННАЯ НИЖНЯЯ ПАНЕЛЬ МЕНЮ -->
+        <div id="main-menu-wrapper">
+            <!-- Сама нижняя деревянная панель с 5 кнопками -->
+            <img id="main-menu-img" src="main_menu.png" alt="Главное меню">
+            
+            <!-- НЕВИДИМЫЕ КНОПКИ НИЖНЕЙ ПАНЕЛИ (5 штук) -->
+            <div id="btn-toggle-tools" class="menu-circle-click" onclick="toggleToolsMenu()"></div>
+            <div id="btn-menu-inventory" class="menu-circle-click" onclick="openInventory()"></div>
+            <div id="btn-menu-garden" class="menu-circle-click" onclick="openGarden()"></div>
+            <div id="btn-menu-shop" class="menu-circle-click" onclick="openCatalog()"></div>
+            <div id="btn-menu-achievements" class="menu-circle-click" onclick="openAchievements()"></div>
+
+            <!-- ОТДЕЛЬНАЯ ВЕТОЧКА С ИНСТРУМЕНТАМИ (Новый слой!) -->
+            <div id="tools-drop-menu">
+                <img id="tools-menu-img" src="tools_menu.png" alt="Инструменты">
+                
+                <!-- Невидимые зоны клика на три круглых инструмента на веточке -->
+                <div id="click-tool-dirt" class="tool-drop-circle" onclick="selectTool('dirt')"></div>
+                <div id="click-tool-seed" class="tool-drop-circle" onclick="selectTool('seed')"></div>
+                <div id="click-tool-water" class="tool-drop-circle" onclick="selectTool('water')"></div>
+            </div>
         </div>
 
-        <!-- Левая верхняя плашка монет -->
+        <!-- ЛЕВАЯ ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ -->
         <div id="ui-top-left">
             <div id="coin-panel-wrapper">
                 <img id="coin-img" src="panel_coins.png" alt="Монеты">
                 <div id="coins-text"><span id="coins">0</span></div>
+            </div>
+            
+            <!-- КНОПКА МУЗЫКИ (Переехала под монеты!) -->
+            <div id="music-wrapper">
+                <img id="btn-music" src="btn_music_new.png" alt="Музыка" onclick="toggleMusic()">
             </div>
         </div>
 
@@ -377,12 +504,6 @@
         <img id="game-cat" src="cat_sleep.png" alt="Спящий котик">
         <img id="game-table" src="table.png" alt="Игровой стол">
         <img id="game-pot" src="pot_empty.png" alt="Горшочек" onclick="clickPot()">
-
-        <!-- 2. Панель подсказок с котиком -->
-        <div id="hint-wrapper">
-            <img id="hint-bg" src="panel_hint.png" alt="Панель подсказок">
-            <div id="game-hint">Выберите инструмент «Земля» справа</div>
-        </div>
 
         <!-- 3. ЛЕВАЯ ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ -->
         <div id="ui-top-left">
@@ -404,13 +525,6 @@
             </div>
         </div>
 
-        <!-- 5. ПРАВАЯ ПАНЕЛЬ ИНСТРУМЕНТОВ -->
-        <div id="right-panel">
-            <img id="btn-dirt" class="tool-btn" src="btn_dirt.png" alt="Земля" onclick="selectTool('dirt')">
-            <img id="btn-water" class="tool-btn" src="btn_water.png" alt="Вода" onclick="selectTool('water')">
-            <img id="btn-seed" class="tool-btn" src="btn_seed.png" alt="Семена" onclick="selectTool('seed')">
-        </div>
-
 
             <!-- Пустая деревянная рамка опыта -->
             <div id="exp-wrapper">
@@ -419,16 +533,13 @@
                 <img id="exp-bar" src="exp_bar.png" alt="Прогресс опыта">
             </div>
 
-        <!-- Нижняя кнопка каталога -->
-        <div id="catalog-wrapper">
-                    <img id="btn-catalog" src="btn_catalog.png" alt="Каталог растений" onclick="openCatalog()">
+        <!-- НОВАЯ ЦЕЛЬНАЯ НИЖНЯЯ ПАНЕЛЬ МЕНЮ -->
+        <div id="main-menu-wrapper">
+            <img id="main-menu-img" src="main_menu.png" alt="Главное меню">
+            <!-- Кнопка Магазина (пока привяжем открытие нашего окна к зоне Магазина) -->
+            <div id="menu-click-shop" onclick="openCatalog()"></div>
         </div>
 
-        <!-- Нижняя кнопка музыки справа -->
-        <div id="music-wrapper">
-            <img id="btn-music" src="btn_music.png" alt="Музыка" onclick="toggleMusic()">
-        </div>
-    </div>
    <!-- ВСПЛЫВАЮЩЕЕ ОКНО КАТАЛОГА -->
         <div id="catalog-modal">
             <div id="catalog-content">
@@ -488,33 +599,6 @@
             }
         }
 
-        // 4. ФУНКЦИЯ ВЫБОРА ИНСТРУМЕНТА Справа
-        function selectTool(tool) {
-            if (isGrowing) return; // Защита: во время роста инструменты выбирать нельзя
-            
-            try { startMusic(); } catch(e) { console.log(e); }
-            
-            document.querySelectorAll('.tool-btn').forEach(function(btn) {
-                btn.style.filter = 'none';
-                btn.style.transform = 'none';
-            });
-            
-            if (selectedTool === tool) {
-                selectedTool = null;
-                updateHint();
-            } else {
-                selectedTool = tool;
-                const activeBtn = document.getElementById('btn-' + tool);
-                if (activeBtn) {
-                    activeBtn.style.filter = 'drop-shadow(0 0 8px rgba(230, 95, 43, 0.8))';
-                    activeBtn.style.transform = 'scale(1.05)';
-                }
-                
-                if (tool === 'dirt') hintElement.innerText = "Кликните на горшочек, чтобы насыпать землю";
-                if (tool === 'seed') hintElement.innerText = "Кликните на горшочек, чтобы посадить семена";
-                if (tool === 'water') hintElement.innerText = "Кликните на горшочек, чтобы полить росток";
-            }
-        }
 
         // 5. ФУНКЦИЯ КЛИКА ПО ГОРШОЧКУ
         function clickPot() {
