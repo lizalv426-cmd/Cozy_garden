@@ -61,13 +61,13 @@
             z-index: 5;
         }
 
-        /* Позиционирование котика на кресле */
+        /* Позиционирование котика ровно на кресле */
         #game-cat {
             position: absolute;
-            bottom: 440px;   
+            bottom: 385px;   /* Спустили кота с потолка прямо на уровень подушки */
             left: 50%;       
-            transform: translateX(-20px); 
-            width: 100px;     
+            transform: translateX(-24px); /* Подвинули левее, чтобы он идеально перекрыл кота на фоне */
+            width: 82px;     /* Оптимальный размер пушистика */
             height: auto;
             pointer-events: none; 
             z-index: 4;      
@@ -455,11 +455,6 @@
         <img id="game-pot" src="pot_empty.png" alt="Горшочек" onclick="clickPot()">
 
 
-        <!-- Панель подсказок -->
-        <div id="hint-wrapper">
-            <img id="hint-bg" src="panel_hint.png" alt="Панель подсказок">
-            <div id="game-hint">Выберите инструмент «Земля» справа</div>
-        </div>
 
         <!-- ОБНОВЛЕННАЯ НИЖНЯЯ ПАНЕЛЬ МЕНЮ -->
         <div id="main-menu-wrapper">
