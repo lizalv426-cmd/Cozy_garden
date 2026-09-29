@@ -108,17 +108,18 @@
         #btn-menu-shop { left: 62%; }
         #btn-menu-achievements { left: 81%; }
 
-                /* КОНТЕЙНЕР ДЛЯ НАШЕЙ ИЗЯЩНОЙ ВЕТОЧКИ */
+            /* КОНТЕЙНЕР ДЛЯ НАШЕЙ ИЗЯЩНОЙ ВЕТОЧКИ */
         #tools-drop-menu {
-            display: none;     /* Изначально прячем */
+            display: block;    /* Заставили её проявиться на экране для настройки! */
             position: absolute;
-            bottom: 90px;      /* Поднимаем четко над деревянным бортиком меню */
-            left: 15px;        /* Подвинули ближе к кнопке инструментов */
-            width: 170px;      /* Аккуратный размер веточки */
-            height: 190px;     /* Четко задаем высоту контейнера для правильного отсчета bottom */
+            bottom: 90px;      
+            left: 15px;        
+            width: 170px;      
+            height: 190px;     
             z-index: 42;
             filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3)); 
         }
+
 
         #tools-menu-img {
             width: 100%;
@@ -129,7 +130,7 @@
         /* КРУГЛЫЕ ЗОНЫ КЛИКА НА ВЕТОЧКЕ */
         .tool-drop-circle {
             position: absolute;
-            width: 50px;       /* Диаметр под круглые иконки */
+            width: 50px;       
             height: 50px;
             cursor: pointer;
             border-radius: 50%;
@@ -137,10 +138,13 @@
             z-index: 46;
         }
 
-        /* Точные координаты синих кругов относительно низа веточки */
-        #click-tool-dirt { bottom: 10px; left: 12px; }    /* Лопата (нижний круг) */
-        #click-tool-seed { bottom: 65px; left: 32px; }    /* Семена (средний круг) */
-        #click-tool-water { bottom: 115px; left: 88px; }  /* Леечка (верхний круг) */
+                /* Рассаживаем синие круги точь-в-точь по вашим нарисованным круглым иконкам */
+        #click-tool-dirt { bottom: 125px; left: -5px; }   /* Лопата с землей (самый верхний левый круг) */
+        #click-tool-seed { bottom: 70px; left: 15px; }    /* Семена (средний круг — оставляем, он идеален!) */
+        #click-tool-water { bottom: 115px; left: 88px; }  /* Леечка с водой (самый верхний правый круг) */
+
+
+
 
 
         /* ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ СЛЕВА */
@@ -412,15 +416,16 @@
         #btn-menu-achievements { left: 81%; }
 
         /* КОНТЕЙНЕР ДЛЯ НАШЕЙ НОВОЙ ВЕТОЧКИ */
-        #tools-drop-menu {
-            display: none;    /* ПО УМОЛЧАНИЮ ВЕТОЧКА СПРЯТАНА! */
+        .tool-drop-circle {
             position: absolute;
-            bottom: 75px;     /* Поднимаем её ровно над нижней панелью */
-            left: 0px;        /* Прижимаем к левому краю меню */
-            width: 260px;     /* Ширина вашей вырезанной веточки (подгоним, если нужно) */
-            height: auto;
-            z-index: 42;
+            width: 50px;       
+            height: 50px;
+            cursor: pointer;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 255, 0.6); /* Яркий синий цвет для настройки! */
+            z-index: 46;
         }
+
 
         #tools-menu-img {
             width: 100%;
@@ -543,35 +548,34 @@
                 <div id="catalog-title">Магазин</div>
             </div>
         </div>
-        <script>
-        // 1. ГЛАВНЫЕ ИГРОВЫЕ ПЕРЕМЕННЫЕ
-        let currentStage = 0; // 0 - пустой, 1 - земля, 2 - росток, 3 - цветок
+    <script>
+        // ИГРОВЫЕ ПЕРЕМЕННЫЕ
+        let currentStage = 0; 
         let coins = 0;
         let selectedTool = null;
         let musicStarted = false;
         let isMuted = false;
         
-        // Переменные для таймера времени
         let growthTimer = null;
         let isGrowing = false;
-        const GROWTH_TIME = 15; // Время роста цветка в секундах для теста
+        const GROWTH_TIME = 15; 
+        let playerLevel = 0;
 
-        // 2. СВЯЗЬ С КАРТИНКАМИ НА ЭКРАНЕ
+        // ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
         const potElement = document.getElementById('game-pot');
         const coinsElement = document.getElementById('coins');
         const hintElement = document.getElementById('game-hint');
         const musicElement = document.getElementById('bg-music');
         const btnMusic = document.getElementById('btn-music');
 
-        // Автоматически подгружаем сохранения при старте
         loadGame();
 
-        // 3. ФУНКЦИИ МУЗЫКИ
+        // СИСТЕМА МУЗЫКИ
         function startMusic() {
             if (!musicStarted && !isMuted && musicElement) {
-                musicElement.volume = 0.3; // Уютная негромкая музыка на 30%
+                musicElement.volume = 0.3; 
                 musicElement.play().catch(function(e) {
-                    console.log("Ожидание клика для запуска звука");
+                    console.log("Ожидание клика для звука");
                 });
                 musicStarted = true;
             }
@@ -594,81 +598,74 @@
             }
         }
 
+        // ЛОГИКА НИЖНЕГО МЕНЮ И ВЕТОЧКИ ИНСТРУМЕНТОВ
+        function toggleToolsMenu() {
+            try { startMusic(); } catch(e) {}
+            const toolsMenu = document.getElementById('tools-drop-menu');
+            
+            if (toolsMenu.style.display === 'block') {
+                toolsMenu.style.display = 'none';
+            } else {
+                toolsMenu.style.display = 'block';
+            }
+        }
 
-        // 5. ФУНКЦИЯ КЛИКА ПО ГОРШОЧКУ
+        function selectTool(tool) {
+            if (isGrowing) return; 
+            try { startMusic(); } catch(e) {}
+            
+            if (selectedTool === tool) {
+                selectedTool = null;
+                updateHint();
+            } else {
+                selectedTool = tool;
+                
+                // Как только инструмент выбран, автоматически закрываем веточку, чтобы не мешала
+                document.getElementById('tools-drop-menu').style.display = 'none';
+            }
+        }
+
+        // ЛОГИКА ГОРШОЧКА
         function clickPot() {
-            if (isGrowing) return; // Защита: блокируем клики во время роста
+            if (isGrowing) return; 
+            try { startMusic(); } catch(e) {}
             
-            try { startMusic(); } catch(e) { console.log(e); }
-            
-            // Шаг 1: Насыпаем землю
             if (currentStage === 0 && selectedTool === 'dirt') {
                 currentStage = 1;
                 potElement.src = 'pot_dirt.png';
                 resetTool();
-                updateHint();
                 saveGame(); 
             } 
-            // Шаг 2: Сажаем семена -> Росток
             else if (currentStage === 1 && selectedTool === 'seed') {
                 currentStage = 2;
                 potElement.src = 'pot_sprout.png'; 
                 resetTool();
-                updateHint();
                 saveGame();
             } 
-            // Шаг 3: Полив и ЗАПУСК ТАЙМЕРА роста
             else if (currentStage === 2 && selectedTool === 'water') {
                 resetTool();
                 startGrowthProcess();
             } 
-            // Шаг 4: Сбор готового цветка
             else if (currentStage === 3) {
-                coins += 3; 
+                coins += 3; // Уменьшили награду до 3 монет по вашему новому плану!
                 coinsElement.innerText = coins;
                 currentStage = 0;
                 potElement.src = 'pot_empty.png';
-                updateHint();
                 saveGame();
-            }
-            else {
-                if (currentStage === 3) {
-                    hintElement.innerText = "Соберите выросший суккулент пальчиком!";
-                } else {
-                    hintElement.innerText = "Этот инструмент сейчас не подходит сюда.";
-                }
             }
         }
 
-        // 6. ФУНКЦИЯ НАСТОЯЩЕГО ТАЙМЕРА РОСТА
         function startGrowthProcess() {
             isGrowing = true;
             let timeLeft = GROWTH_TIME;
             
-            // Визуально блокируем кнопки (делаем их черно-белыми)
-            document.querySelectorAll('.tool-btn').forEach(function(btn) {
-                btn.classList.add('disabled');
-            });
-            
-            hintElement.innerText = "Водичка впиталась! Цветок растет... (" + timeLeft + " сек)";
-            
             growthTimer = setInterval(function() {
                 timeLeft--;
-                if (timeLeft > 0) {
-                    hintElement.innerText = "Водичка впиталась! Цветок растет... (" + timeLeft + " сек)";
-                } else {
-                    // Время вышло! Цветок вырос
+                if (timeLeft <= 0) {
                     clearInterval(growthTimer);
                     isGrowing = false;
                     currentStage = 3;
                     potElement.src = 'pot_flower.png';
-                    
-                    // Возвращаем кнопкам былую яркость
-                    document.querySelectorAll('.tool-btn').forEach(function(btn) {
-                        btn.classList.remove('disabled');
-                    });
-                    
-                    updateHint();
                     saveGame();
                 }
             }, 1000);
@@ -676,36 +673,29 @@
             saveGame();
         }
 
-        // 7. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
         function resetTool() {
             selectedTool = null;
-            document.querySelectorAll('.tool-btn').forEach(function(btn) {
-                btn.style.filter = 'none';
-                btn.style.transform = 'none';
-            });
         }
 
         function updateHint() {
-            if (isGrowing) return;
-            if (currentStage === 0) hintElement.innerText = "Выберите инструмент «Земля» справа";
-            if (currentStage === 1) hintElement.innerText = "Отлично! Теперь выберите «Семена»";
-            if (currentStage === 2) hintElement.innerText = "Росток появился! Выберите «Вода» для полива";
-            if (currentStage === 3) hintElement.innerText = "Красота! Кликните на цветок, чтобы собрать пыльцу";
+            // Заглушка, так как старую плашку подсказок мы убрали
         }
 
-         // Функция, которая открывает блокнот-гербарий
+        // ОТКРЫТИЕ ОКНА МАГАЗИНА И ЗАГЛУШКИ КНОПОК
         function openCatalog() {
-            // Находим наше скрытое окно по его ID и меняем 'none' на 'flex' (сделать видимым)
+            try { startMusic(); } catch(e) {}
             document.getElementById('catalog-modal').style.display = 'flex';
         }
 
-        // Функция, которая закрывает блокнот-гербарий
         function closeCatalog() {
-            // Снова прячем окно, возвращая ему значение 'none'
             document.getElementById('catalog-modal').style.display = 'none';
         }
 
-        // 8. СИСТЕМА ЛОКАЛЬНОГО СОХРАНЕНИЯ ПРОГРЕССА
+        function openInventory() { alert("🎒 Здесь будет открываться ваш инвентарь черенков!"); }
+        function openGarden() { alert("🏡 Здесь будет управление вашим садом!"); }
+        function openAchievements() { alert("🏆 Здесь будут ваши кубки и достижения!"); }
+
+        // СИСТЕМА СОХРАНЕНИЙ
         function saveGame() {
             localStorage.setItem('cozy_garden_coins', coins);
             localStorage.setItem('cozy_garden_stage', currentStage);
@@ -731,7 +721,6 @@
                 if (currentStage === 1) potElement.src = 'pot_dirt.png';
                 if (currentStage === 3) potElement.src = 'pot_flower.png';
             }
-            updateHint();
         }
     </script>
 </body>
