@@ -143,10 +143,6 @@
         #click-tool-seed { bottom: 70px; left: 15px; }    /* Семена (средний круг — оставляем, он идеален!) */
         #click-tool-water { bottom: 115px; left: 88px; }  /* Леечка с водой (самый верхний правый круг) */
 
-
-
-
-
         /* ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ СЛЕВА */
         #ui-top-left {
             position: absolute;
@@ -234,25 +230,7 @@
             object-fit: cover;
             transition: width 0.3s ease-in-out; 
         }
-        /* НОВАЯ НИЖНЯЯ ПАНЕЛЬ МЕНЮ */
-        #main-menu-wrapper {
-            position: absolute;
-            bottom: 0;        /* Намертво прижали к самому низу экрана */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;      /* Растягивается на всю ширину контейнера */
-            max-width: 500px;
-            height: auto;
-            z-index: 40;      /* Лежит выше стола и котика, прямо под пальцами */
-            filter: drop-shadow(0px -4px 8px rgba(0, 0, 0, 0.35)); /* Мягкая тень вверх, на комнату */
-        }
-
-        #main-menu-img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
+        
         /* НЕВИДИМАЯ КНОПКА КЛИКА ПОВЕРХ МАГАЗИНА */
         #menu-click-shop {
             position: absolute;
@@ -396,57 +374,74 @@
             letter-spacing: 1px;
             pointer-events: none;
         }
-                /* НЕВИДИМЫЕ КРУГИ ДЛЯ 5 КНОПОК МЕНЮ */
+                /* НОВАЯ НИЖНЯЯ ПАНЕЛЬ МЕНЮ */
+        #main-menu-wrapper {
+            position: absolute;
+            bottom: 0;        
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;      
+            max-width: 450px;
+            height: auto;
+            z-index: 40;      
+            filter: drop-shadow(0px -4px 8px rgba(0, 0, 0, 0.35)); 
+        }
+        #main-menu-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* НЕВИДИМЫЕ КРУГИ ДЛЯ 5 КНОПОК МЕНЮ */
         .menu-circle-click {
             position: absolute;
-            bottom: 22px;      /* Высота кружков от низа */
-            width: 72px;       /* Диаметр зоны для тапа пальцем */
-            height: 72px;
+            bottom: 12px;      /* Опустили пониже, чтобы кнопки легли ровно на круглые иконки */
+            width: 68px;       /* Диаметр зоны для тапа пальцем */
+            height: 68px;
             cursor: pointer;
             border-radius: 50%;
             z-index: 45;
-            /* background-color: rgba(255, 0, 0, 0.3); */ /* Раскомментируйте, чтобы увидеть зоны при тесте! */
+            /* background-color: rgba(255, 0, 0, 0.4); */ /* Уберите комментарий, если захотите проверить круги меню! */
         }
-        
         /* Рассаживаем 5 зон по кнопкам на панели */
         #btn-toggle-tools { left: 4%; }
-        #btn-menu-inventory { left: 24%; }
-        #btn-menu-garden { left: 43%; }
-        #btn-menu-shop { left: 62%; }
-        #btn-menu-achievements { left: 81%; }
+        #btn-menu-inventory { left: 23%; }
+        #btn-menu-garden { left: 42%; }
+        #btn-menu-shop { left: 61%; }
+        #btn-menu-achievements { left: 80%; }
 
-        /* КОНТЕЙНЕР ДЛЯ НАШЕЙ НОВОЙ ВЕТОЧКИ */
-        .tool-drop-circle {
+        /* КОНТЕЙНЕР ДЛЯ НАШЕЙ ИЗЯЩНОЙ ВЕТОЧКИ */
+        #tools-drop-menu {
+            display: block;    
             position: absolute;
-            width: 50px;       
-            height: 50px;
-            cursor: pointer;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 255, 0.6); /* Яркий синий цвет для настройки! */
-            z-index: 46;
+            bottom: 100px;   
+            left: 10px;        
+            width: 330px;      
+            height: 195px;     
+            z-index: 42;
+            filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3)); 
         }
-
-
         #tools-menu-img {
             width: 100%;
             height: auto;
             display: block;
         }
 
-        /* НЕВИДИМЫЕ ЗОНЫ ДЛЯ КЛИКОВ НА САМОЙ ВЕТОЧКЕ */
+        /* КРУГЛЫЕ ЗОНЫ КЛИКА НА ВЕТОЧКЕ */
         .tool-drop-circle {
             position: absolute;
-            width: 55px;      /* Диаметр круглых инструментов */
-            height: 55px;
+            width: 48px;       /* Подогнали диаметр под иконки веточки */
+            height: 48px;
             cursor: pointer;
             border-radius: 50%;
-            /* background-color: rgba(0, 0, 255, 0.3); */ /* Раскомментируйте для настройки кругов! */
+            background-color: rgba(0, 0, 255, 0.5); /* Включаем синий цвет для проверки! */
+            z-index: 46;
         }
+        /* Новые ювелирные координаты синих кругов */
+        #click-tool-dirt { bottom: 125px; left: -5px; }   /* Лопата */
+        #click-tool-seed { bottom: 70px; left: 15px; }    /* Семена */
+        #click-tool-water { bottom: 115px; left: 88px; }  /* Леечка */
 
-        /* Примерные координаты зон поверх веточки (скорректируем по вашей картинке!) */
-        #click-tool-dirt { top: 10px; left: 44%; }   /* Лопата с землей */
-        #click-tool-seed { bottom: 10px; left: 46%; } /* Семена */
-        #click-tool-water { top: 60px; right: 5%; }   /* Леечка */
     </style>   
 </head>
 <body>
