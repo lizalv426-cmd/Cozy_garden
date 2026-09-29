@@ -410,16 +410,17 @@
         #btn-menu-shop { left: 61%; }
         #btn-menu-achievements { left: 80%; }
 
-        /* КОНТЕЙНЕР ДЛЯ НАШЕЙ ИЗЯЩНОЙ ВЕТОЧКИ */
+                /* КОНТЕЙНЕР ДЛЯ НАШЕЙ ИЗЯЩНОЙ ВЕТОЧКИ */
         #tools-drop-menu {
-            display: block;    
+            display: none;     /* Возвращаем скрытность по умолчанию! */
             position: absolute;
-            bottom: 100px;   
+            bottom: 100px;      
             left: 10px;        
             width: 330px;      
             height: 195px;     
             z-index: 42;
             filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3)); 
+            pointer-events: none; /* Клик на «Инструменты» теперь гарантированно пролетит СКВОЗЬ этот блок! */
         }
         #tools-menu-img {
             width: 100%;
@@ -430,85 +431,56 @@
         /* КРУГЛЫЕ ЗОНЫ КЛИКА НА ВЕТОЧКЕ */
         .tool-drop-circle {
             position: absolute;
-            width: 48px;       /* Подогнали диаметр под иконки веточки */
+            width: 48px;       
             height: 48px;
             cursor: pointer;
             border-radius: 50%;
-            background-color: rgba(0, 0, 255, 0.5); /* Включаем синий цвет для проверки! */
+            background-color: rgba(0, 0, 255, 0); /* Делаем круги полностью невидимыми */
             z-index: 46;
+            pointer-events: auto; /* Сами инструменты при этом нажиматься будут идеально! */
         }
-        /* Новые ювелирные координаты синих кругов */
-        #click-tool-dirt { bottom: 125px; left: -5px; }   /* Лопата */
-        #click-tool-seed { bottom: 70px; left: 15px; }    /* Семена */
-        #click-tool-water { bottom: 115px; left: 88px; }  /* Леечка */
+
+            /* Передвигаем синие круги ровно на семена и леечку */
+        #click-tool-dirt { bottom: 125px; left: 65px; }   /* Лопата (уже стоит идеально!) */
+        #click-tool-seed { bottom: 35px; left: 75px; }    /* Семена (сдвинули правее и пониже) */
+        #click-tool-water { bottom: 95px; left: 175px; }  /* Леечка (сдвинули правее и повыше) */
+
+        <!-- 2. Обновленная панель подсказок по центру -->
+        <div id="hint-wrapper">
+            <img id="hint-bg" src="panel_hint.png" alt="Панель подсказок">
+            <div id="game-hint">Выберите инструмент «Земля» на веточке инструментов</div>
+        </div>
 
     </style>   
 </head>
 <body>
 
-        <div id="game-container">
+    <div id="game-container">
         <audio id="bg-music" src="music.mp3" loop></audio>
 
-        <!-- Слои комнаты: котик, стол и горшочек -->
+        <!-- 1. Персонажи и окружение комнаты -->
         <img id="game-cat" src="cat_sleep.png" alt="Спящий котик">
         <img id="game-table" src="table.png" alt="Игровой стол">
         <img id="game-pot" src="pot_empty.png" alt="Горшочек" onclick="clickPot()">
 
-
-
-        <!-- ОБНОВЛЕННАЯ НИЖНЯЯ ПАНЕЛЬ МЕНЮ -->
-        <div id="main-menu-wrapper">
-            <!-- Сама нижняя деревянная панель с 5 кнопками -->
-            <img id="main-menu-img" src="main_menu.png" alt="Главное меню">
-            
-            <!-- НЕВИДИМЫЕ КНОПКИ НИЖНЕЙ ПАНЕЛИ (5 штук) -->
-            <div id="btn-toggle-tools" class="menu-circle-click" onclick="toggleToolsMenu()"></div>
-            <div id="btn-menu-inventory" class="menu-circle-click" onclick="openInventory()"></div>
-            <div id="btn-menu-garden" class="menu-circle-click" onclick="openGarden()"></div>
-            <div id="btn-menu-shop" class="menu-circle-click" onclick="openCatalog()"></div>
-            <div id="btn-menu-achievements" class="menu-circle-click" onclick="openAchievements()"></div>
-
-            <!-- ОТДЕЛЬНАЯ ВЕТОЧКА С ИНСТРУМЕНТАМИ (Новый слой!) -->
-            <div id="tools-drop-menu">
-                <img id="tools-menu-img" src="tools_menu.png" alt="Инструменты">
-                
-                <!-- Невидимые зоны клика на три круглых инструмента на веточке -->
-                <div id="click-tool-dirt" class="tool-drop-circle" onclick="selectTool('dirt')"></div>
-                <div id="click-tool-seed" class="tool-drop-circle" onclick="selectTool('seed')"></div>
-                <div id="click-tool-water" class="tool-drop-circle" onclick="selectTool('water')"></div>
-            </div>
+        <!-- 2. Обновленная панель подсказок по центру -->
+        <div id="hint-wrapper">
+            <img id="hint-bg" src="panel_hint.png" alt="Панель подсказок">
+            <div id="game-hint">Выберите инструмент «Земля» на веточке инструментов</div>
         </div>
 
-        <!-- ЛЕВАЯ ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ -->
+        <!-- 2. Шапка игры: Левая панель монет и кнопка музыки -->
         <div id="ui-top-left">
             <div id="coin-panel-wrapper">
                 <img id="coin-img" src="panel_coins.png" alt="Монеты">
                 <div id="coins-text"><span id="coins">0</span></div>
             </div>
-            
-            <!-- КНОПКА МУЗЫКИ (Переехала под монеты!) -->
             <div id="music-wrapper">
                 <img id="btn-music" src="btn_music_new.png" alt="Музыка" onclick="toggleMusic()">
             </div>
         </div>
 
-            <div id="game-container">
-        <audio id="bg-music" src="music.mp3" loop></audio>
-
-        <!-- 1. Слои комнаты и персонажи -->
-        <img id="game-cat" src="cat_sleep.png" alt="Спящий котик">
-        <img id="game-table" src="table.png" alt="Игровой стол">
-        <img id="game-pot" src="pot_empty.png" alt="Горшочек" onclick="clickPot()">
-
-        <!-- 3. ЛЕВАЯ ВЕРХНЯЯ ПАНЕЛЬ МОНЕТ -->
-        <div id="ui-top-left">
-            <div id="coin-panel-wrapper">
-                <img id="coin-img" src="panel_coins.png" alt="Монеты">
-                <div id="coins-text"><span id="coins">0</span></div>
-            </div>
-        </div>
-
-        <!-- 4. ПРАВАЯ ВЕРХНЯЯ ПАНЕЛЬ УРОВНЯ И ОПЫТА (Всё четко закрыто!) -->
+        <!-- 3. Шапка игры: Правая панель уровня и опыта -->
         <div id="ui-top-right">
             <div id="level-wrapper">
                 <img id="level-img" src="panel_level.png" alt="Уровень">
@@ -520,30 +492,40 @@
             </div>
         </div>
 
-
-            <!-- Пустая деревянная рамка опыта -->
-            <div id="exp-wrapper">
-                <img id="exp-bg" src="exp_bg.png" alt="Шкала опыта">
-                <!-- ЖЁЛТАЯ ЗАЛИВКА ОПЫТА -->
-                <img id="exp-bar" src="exp_bar.png" alt="Прогресс опыта">
+        <!-- 4. Новая цельная нижняя панель меню -->
+        <div id="main-menu-wrapper">
+            <!-- Сама деревянная панель на фоне -->
+            <img id="main-menu-img" src="main_menu.png" alt="Главное меню">
+            
+            <!-- Раскрывающаяся веточка инструментов ( лежит ПОД кнопками!) -->
+            <div id="tools-drop-menu">
+                <img id="tools-menu-img" src="tools_menu.png" alt="Инструменты">
+                
+                <!-- 3 зоны клика на самой веточке -->
+                <div id="click-tool-dirt" class="tool-drop-circle" onclick="selectTool('dirt')"></div>
+                <div id="click-tool-seed" class="tool-drop-circle" onclick="selectTool('seed')"></div>
+                <div id="click-tool-water" class="tool-drop-circle" onclick="selectTool('water')"></div>
             </div>
 
-        <!-- НОВАЯ ЦЕЛЬНАЯ НИЖНЯЯ ПАНЕЛЬ МЕНЮ -->
-        <div id="main-menu-wrapper">
-            <img id="main-menu-img" src="main_menu.png" alt="Главное меню">
-            <!-- Кнопка Магазина (пока привяжем открытие нашего окна к зоне Магазина) -->
-            <div id="menu-click-shop" onclick="openCatalog()"></div>
+            <!-- 5 НЕВИДИМЫХ КНОПОК МЕНЮ (Лежат ПОВЕРХ веточки, чтобы всегда нажиматься!) -->
+            <div id="btn-toggle-tools" class="menu-circle-click" onclick="toggleToolsMenu()"></div>
+            <div id="btn-menu-inventory" class="menu-circle-click" onclick="openInventory()"></div>
+            <div id="btn-menu-garden" class="menu-circle-click" onclick="openGarden()"></div>
+            <div id="btn-menu-shop" class="menu-circle-click" onclick="openCatalog()"></div>
+            <div id="btn-menu-achievements" class="menu-circle-click" onclick="openAchievements()"></div>
         </div>
 
-   <!-- ВСПЛЫВАЮЩЕЕ ОКНО КАТАЛОГА -->
+        <!-- Всплывающее окно Магазина -->
         <div id="catalog-modal">
             <div id="catalog-content">
-                <img id="catalog-notebook" src="catalog_bg1.png" alt="Гербарий">
-                <<div id="catalog-close" onclick="closeCatalog()"></div>
+                <img id="catalog-notebook" src="https://ibb.co" alt="Гербарий">
+                <div id="catalog-close" onclick="closeCatalog()"></div>
                 <div id="catalog-title">Магазин</div>
             </div>
         </div>
-    <script>
+    </div>
+
+        <script>
         // ИГРОВЫЕ ПЕРЕМЕННЫЕ
         let currentStage = 0; 
         let coins = 0;
@@ -556,7 +538,7 @@
         const GROWTH_TIME = 15; 
         let playerLevel = 0;
 
-        // ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
+        // ЭЛЕМЕНТЫ ИНТЕРФЕЙСА (Вернули связь с подсказкой hintElement!)
         const potElement = document.getElementById('game-pot');
         const coinsElement = document.getElementById('coins');
         const hintElement = document.getElementById('game-hint');
@@ -615,7 +597,11 @@
             } else {
                 selectedTool = tool;
                 
-                // Как только инструмент выбран, автоматически закрываем веточку, чтобы не мешала
+                if (tool === 'dirt') hintElement.innerText = "Кликните на горшочек, чтобы насыпать землю";
+                if (tool === 'seed') hintElement.innerText = "Кликните на горшочек, чтобы посадить семена";
+                if (tool === 'water') hintElement.innerText = "Кликните на горшочек, чтобы полить росток";
+                
+                // Автоматически сворачиваем веточку после успешного выбора инструмента
                 document.getElementById('tools-drop-menu').style.display = 'none';
             }
         }
@@ -629,12 +615,14 @@
                 currentStage = 1;
                 potElement.src = 'pot_dirt.png';
                 resetTool();
+                updateHint();
                 saveGame(); 
             } 
             else if (currentStage === 1 && selectedTool === 'seed') {
                 currentStage = 2;
                 potElement.src = 'pot_sprout.png'; 
                 resetTool();
+                updateHint();
                 saveGame();
             } 
             else if (currentStage === 2 && selectedTool === 'water') {
@@ -642,10 +630,11 @@
                 startGrowthProcess();
             } 
             else if (currentStage === 3) {
-                coins += 3; // Уменьшили награду до 3 монет по вашему новому плану!
+                coins += 3; // Награда уменьшена до 3 монет по вашему геймдизайн-плану!
                 coinsElement.innerText = coins;
                 currentStage = 0;
                 potElement.src = 'pot_empty.png';
+                updateHint();
                 saveGame();
             }
         }
@@ -654,13 +643,18 @@
             isGrowing = true;
             let timeLeft = GROWTH_TIME;
             
+            hintElement.innerText = "Водичка впиталась! Цветок растет... (" + timeLeft + " сек)";
+            
             growthTimer = setInterval(function() {
                 timeLeft--;
-                if (timeLeft <= 0) {
+                if (timeLeft > 0) {
+                    hintElement.innerText = "Водичка впиталась! Цветок растет... (" + timeLeft + " сек)";
+                } else {
                     clearInterval(growthTimer);
                     isGrowing = false;
                     currentStage = 3;
                     potElement.src = 'pot_flower.png';
+                    updateHint();
                     saveGame();
                 }
             }, 1000);
@@ -673,7 +667,11 @@
         }
 
         function updateHint() {
-            // Заглушка, так как старую плашку подсказок мы убрали
+            if (isGrowing) return;
+            if (currentStage === 0) hintElement.innerText = "Выберите инструмент «Земля» на веточке";
+            if (currentStage === 1) hintElement.innerText = "Отлично! Теперь выберите «Семена»";
+            if (currentStage === 2) hintElement.innerText = "Росток появился! Выберите «Вода» для полива";
+            if (currentStage === 3) hintElement.innerText = "Красота! Кликните на цветок, чтобы собрать его";
         }
 
         // ОТКРЫТИЕ ОКНА МАГАЗИНА И ЗАГЛУШКИ КНОПОК
@@ -716,6 +714,7 @@
                 if (currentStage === 1) potElement.src = 'pot_dirt.png';
                 if (currentStage === 3) potElement.src = 'pot_flower.png';
             }
+            updateHint();
         }
     </script>
 </body>
